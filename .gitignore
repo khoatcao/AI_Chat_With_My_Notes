@@ -1,0 +1,23 @@
+# Environment
+.env
+
+# Uploaded notes & personal data
+data/notes/
+data/chroma/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# Node
+frontend/node_modules/
+
+# Jupyter
+notebooks/.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# OS
+.DS_Store

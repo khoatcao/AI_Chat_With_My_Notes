@@ -1,0 +1,50 @@
+services:
+  api:
+    build: .
+    command: uvicorn api:app --host 0.0.0.0 --port 8001 --reload
+    volumes:
+      - .:/app
+      - chroma_data:/app/data/chroma
+      - hf_cache:/root/.cache/huggingface
+    env_file:
+      - .env
+    ports:
+      - "8001:8001"
+    depends_on:
+      - chromadb
+
+  frontend:
+    build: ./frontend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    depends_on:
+      - api
+
+  chromadb:
+    image: chromadb/chroma:latest
+    ports:
+      - "8000:8000"
+    volumes:
+      - chroma_data:/chroma/chroma
+    environment:
+      - ANONYMIZED_TELEMETRY=false
+
+  jupyter:
+    build: .
+    command: jupyter notebook --ip=0.0.0.0 --port=8888 --no-browser --allow-root --NotebookApp.token=''
+    volumes:
+      - .:/app
+      - chroma_data:/app/data/chroma
+    env_file:
+      - .env
+    ports:
+      - "8889:8888"
+    profiles:
+      - notebook
+
+volumes:
+  chroma_data:
+  hf_cache:
